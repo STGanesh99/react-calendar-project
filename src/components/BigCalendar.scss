@@ -1,0 +1,29 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+body {
+  font-family: "Open Sans" !important;
+}
+.rbc-month-view {
+  margin: 10px 5% !important;
+  width: unset !important;
+}
+.rbc-toolbar {
+  padding: 0px 25px !important;
+}
+.rbc-toolbar-label {
+  font-size: larger !important;
+}
+.rbc-day-bg:not(.rbc-off-range-bg):hover {
+  background-color: rgba(245, 216, 120, 0.315) !important;
+}
+.priority-high {
+  background-color: rgba(253, 48, 48, 0.897) !important;
+}
+.priority-medium {
+  background-color: rgba(253, 140, 48, 0.897) !important;
+}
+.priority-low {
+  background-color: rgba(77, 202, 108, 0.897) !important;
+}
+
+@import "react-big-calendar/lib/sass/styles";
