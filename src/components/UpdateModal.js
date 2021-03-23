@@ -20,6 +20,7 @@ var uniqid = require('uniqid');
 function TransitionsModal(props) {
   const classes = styles();
   var [timeerr,settimeerr] = useState(""); 
+  const [membererr,setmembererr] = useState("");
   var t = false;
   t = (props.data
     && Object.keys(props.data).length === 0 && props.data.constructor === Object)
@@ -47,6 +48,10 @@ function TransitionsModal(props) {
       settimeerr("Please select a Valid Timeline!")
       return;
     }
+    if(formState.value.length==0){
+        setmembererr("Please add Member's for the Event")
+        return;
+    }
     if(t){
     formState.id = uniqid();
     props.formHandler(formState);
@@ -59,6 +64,7 @@ function TransitionsModal(props) {
       formHandler({start: new Date(), end: new Date(),inputValue:"",value:[]})
       props.edit([...afterdelete,formState])
     }
+    props.settimeerr("")
     formHandler({})
     props.handleClose();
   };
@@ -144,6 +150,7 @@ function TransitionsModal(props) {
                   label="From"
                   name="start"
                   required
+                  minDate = {new Date()}
                   value={formState.start}
                   onChange={(date) =>
                     formHandler({ ...formState, start: date })
@@ -158,6 +165,7 @@ function TransitionsModal(props) {
                   name="end"
                   required
                   value={formState.end}
+                  minDate={new Date()}
                   onChange={(date) => formHandler({ ...formState, end: date })}
                   style={{
                     marginRight: "20px",
@@ -181,7 +189,9 @@ function TransitionsModal(props) {
             <br />
             <h4 style={{ margin: "20px 0" }}>Attendees</h4>
             <div style={{width:'400px'}}>
-            <CreatableInputOnly formHandler={(obj)=>formHandler(obj)} formState = {formState}/>
+            <CreatableInputOnly formHandler={(obj)=>formHandler(obj)} formState = {formState} membererr={membererr}
+                  setmembererr = {setmembererr}
+            />
             </div>
             <div style={{ marginTop: "15px" }}>
               <Button

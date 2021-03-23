@@ -11,6 +11,7 @@ const components = {
 function CreatableInputOnly(props){
    const {value,inputValue} = props.formState
    const [mailerr,setmailerr] = useState("")
+  
     const createOption = (label) => ({
       label,
       value: label,
@@ -60,6 +61,7 @@ function CreatableInputOnly(props){
           value: arr,
         });
         setmailerr("")
+        props.setmembererr("")
         event.preventDefault();
     }
     
@@ -78,7 +80,9 @@ function CreatableInputOnly(props){
         placeholder="Members"
         value={value}
       />
-      {mailerr!=""&&  <div class="alert alert-danger" role="alert">{mailerr}</div>}
+      {props.membererr!=""&&<div class="alert alert-danger" role="alert">{props.membererr}</div>}
+      {mailerr!=""&&<div class="alert alert-danger" role="alert">{mailerr}</div>}'
+      
       </>
     );
   }

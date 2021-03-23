@@ -92,6 +92,7 @@ import DateFnsUtils from '@date-io/date-fns';
         label="Select"
         value={props.date}
         onChange={setDateChange}
+        minDate={new Date()}
       />
       </MuiPickersUtilsProvider>
           </div>
