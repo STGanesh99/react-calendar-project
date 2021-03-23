@@ -8,6 +8,8 @@ import eventList from "../sampleData.json";
 import "./BigCalendar.scss";
 import { Button } from "@material-ui/core";
 import UpdateModal from "./UpdateModal";
+import EventComponent from "./EventComponent";
+import Toolbar from "./toolbar"
 
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
@@ -21,9 +23,13 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+
 const MyCalendar = () => {
   const [showModalState, setShowModalState] = useState(false);
+  const [modalData, setModalData] = useState({});
   const [eventData, setEventData] = useState(eventList);
+  const [date,setDate] = useState(new Date())
+  
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Button
@@ -34,8 +40,15 @@ const MyCalendar = () => {
       </Button>
       <UpdateModal
         open={showModalState}
-        handleClose={() => setShowModalState(false)}
-        formHandler={(formData) => setEventData([...eventData, formData])}
+        handleClose={() => {setShowModalState(false);
+        setModalData({});}}
+        formHandler={(formData) => {setEventData([...eventData, formData])
+        console.log(formData)
+        }}
+        data={modalData}
+        events={eventList}
+        date = {date} 
+        edit = {(events)=>{setEventData(events)}}
       />
       <Calendar
         localizer={localizer}
@@ -47,6 +60,22 @@ const MyCalendar = () => {
         eventPropGetter={(event) => ({
           className: `priority-${event.priority}`,
         })}
+        popup = {true}
+        date={date}
+        components={{
+          event: (props) => (
+            <EventComponent
+              {...props}
+              showModal={setShowModalState}
+              modalDataHandler={setModalData}
+              events ={eventData}
+              setevents = {setEventData} 
+            />
+          ),
+          toolbar:(props)=>(
+            <Toolbar {...props} date = {date} setDate={(d)=>setDate(d)} />
+          )  
+        }}
       />
     </div>
   );

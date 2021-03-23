@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import styles from "./UpdateModalStyles";
 import {
   withStyles,
@@ -12,24 +12,65 @@ import {
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import CreatableInputOnly from "./memberbox"
+import "./warnmessages.css"
+
+var uniqid = require('uniqid');
 
 function TransitionsModal(props) {
   const classes = styles();
-  const [formState, formHandler] = useState(props.data);
+  var [timeerr,settimeerr] = useState(""); 
+  var t = false;
+  t = (props.data
+    && Object.keys(props.data).length === 0 && props.data.constructor === Object)
+  const [formState, formHandler] = useState({});
+  useEffect(()=>{
+    if(!(props.data
+      && Object.keys(props.data).length === 0 && props.data.constructor === Object)){
+        formHandler(props.data)
+        console.log(formState)
+      }
+    else{
+       var enddate = new Date(props.date.valueOf())
+       enddate.setMinutes(enddate.getMinutes()+30)
+      formHandler({start: props.date, end:enddate ,inputValue:"",value:[]})
+    } 
+  },[props.data,props.date])
+
 
   const submitHandler = (e) => {
     e.preventDefault();
+    var d1 = new Date(formState.start)
+    var d2= new Date(formState.end)
+    console.log(d1,d2)
+    if(d1>d2){
+      settimeerr("Please select a Valid Timeline!")
+      return;
+    }
+    if(t){
+    formState.id = uniqid();
     props.formHandler(formState);
+    }
+    else{
+      var deleteid = formState.id;
+      var afterdelete = props.events.filter(function(obj){
+        return obj.id!=deleteid
+      })
+      formHandler({start: new Date(), end: new Date(),inputValue:"",value:[]})
+      props.edit([...afterdelete,formState])
+    }
+    formHandler({})
     props.handleClose();
   };
+
   const handleChange = (e) => {
     let propertyName = e.target.getAttribute("name");
     let propertyValue = e.target.value;
-    const newObject = { ...formState };
+    let newObject;
+      newObject = JSON.parse(JSON.stringify(formState));
     newObject[propertyName] = propertyValue;
     formHandler(newObject);
   };
-
   return (
     <Modal
       aria-labelledby="simple-modal-title"
@@ -42,17 +83,19 @@ function TransitionsModal(props) {
       BackdropProps={{
         timeout: 500,
       }}
-    >
+    >   
       <Fade in={props.open}>
         <div className={classes.paper}>
-          <h2 id="transition-modal-title">New Event</h2>
+           {t? 
+          <h2 id="transition-modal-title">New Event</h2>:<h2 id="transition-modal-title">Edit Event</h2>
+           }
           <h4>Details</h4>
           <form onSubmit={submitHandler}>
             <TextField
               id="filled-basic"
               name="title"
               label="Title"
-              value={props.data?.title}
+              defaultValue={formState?.title}
               required
               onChange={handleChange}
               className={classes.textfield}
@@ -62,7 +105,8 @@ function TransitionsModal(props) {
               select
               name="priority"
               label="Priority"
-              defaultValue={props.data?.priority || "high"}
+              defaultValue={formState?.priority || ""}
+              required
               onChange={(e) =>
                 formHandler({ ...formState, priority: e.target.value })
               }
@@ -81,7 +125,7 @@ function TransitionsModal(props) {
                   <FiberManualRecordIcon
                     style={{ color: "rgba(253, 140, 48, 0.897)" }}
                   />
-                  <span> Medium</span>
+                  <span>Medium</span>
                 </div>
               </MenuItem>
               <MenuItem value="low">
@@ -99,8 +143,8 @@ function TransitionsModal(props) {
                   variant="inline"
                   label="From"
                   name="start"
-                  defaultValue={props.data?.start}
-                  value={formState?.start}
+                  required
+                  value={formState.start}
                   onChange={(date) =>
                     formHandler({ ...formState, start: date })
                   }
@@ -108,20 +152,20 @@ function TransitionsModal(props) {
                     marginRight: "20px",
                   }}
                 />
-
                 <DateTimePicker
                   variant="inline"
                   label="To"
                   name="end"
-                  defaultValue={props.data?.end}
-                  value={formState?.end}
+                  required
+                  value={formState.end}
                   onChange={(date) => formHandler({ ...formState, end: date })}
                   style={{
                     marginRight: "20px",
                   }}
                 />
               </MuiPickersUtilsProvider>
-            </div>
+              {timeerr!=""&&<div class="alert alert-warning" role="alert">{timeerr}</div>}
+              </div>
             <h4 style={{ margin: "20px 0" }}>More information</h4>
             <TextField
               id="outlined-basic"
@@ -129,19 +173,16 @@ function TransitionsModal(props) {
               variant="outlined"
               multiline
               rows={3}
-              name="description"
+              name="desc"
+              defaultValue={formState?.desc}
+              onChange={handleChange}
               style={{ width: "400px" }}
             />
             <br />
-            <TextField
-              id="outlined-email-input"
-              label="Members"
-              type="email"
-              name="email"
-              autoComplete="email"
-              margin="normal"
-              variant="outlined"
-            />
+            <h4 style={{ margin: "20px 0" }}>Attendees</h4>
+            <div style={{width:'400px'}}>
+            <CreatableInputOnly formHandler={(obj)=>formHandler(obj)} formState = {formState}/>
+            </div>
             <div style={{ marginTop: "15px" }}>
               <Button
                 variant="outlined"
@@ -151,9 +192,12 @@ function TransitionsModal(props) {
               >
                 Close
               </Button>
-              <Button variant="outlined" color="primary" type="submit">
+              {t&&<Button variant="outlined" color="primary" type="submit">
                 Add event
-              </Button>
+              </Button>}
+              {!t&&<Button variant="outlined" color="primary" type="submit">
+                Save
+              </Button>}
             </div>
           </form>
         </div>
