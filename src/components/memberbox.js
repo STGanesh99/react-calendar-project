@@ -1,76 +1,78 @@
-import {validate} from '@material-ui/pickers';
-import React,{useState } from 'react';
-import CreatableSelect from 'react-select/creatable';
-import "./warnmessages.css"
+import React, { useState } from "react";
+import CreatableSelect from "react-select/creatable";
 
 const components = {
   DropdownIndicator: null,
 };
 
+function CreatableInputOnly(props) {
+  const optionList = props.memberState.map((member) => ({
+    label: member,
+    value: member,
+  }));
+  const [state, stateHandler] = useState({
+    inputValue: "",
+    value: optionList,
+  });
+  const [mailErr, setMailErr] = useState("");
 
-function CreatableInputOnly(props){
-   const {value,inputValue} = props.formState
-   const [mailerr,setmailerr] = useState("")
-  
-    const createOption = (label) => ({
-      label,
-      value: label,
-    });
-    function ValidateEmail(mail)
-{
- if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail))
-  {
-    return (true)
+  const createOption = (label) => ({
+    label,
+    value: label,
+  });
+
+  function ValidateEmail(mail) {
+    if (
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        mail
+      )
+    ) {
+      return true;
+    }
+    setMailErr("Member's email address is invalid!");
+    return false;
   }
-    setmailerr("Member's email address is invalid!")
-    return (false)
-}
 
   const handleChange = (value) => {
-    props.formHandler({...props.formState,value:value});
+    stateHandler({ ...state, value: value });
+    let values = value.map((item) => item.label);
+    props.memberListHandler([...values]);
   };
 
   const handleInputChange = (inputValue) => {
-    props.formHandler({...props.formState,inputValue:inputValue});
+    stateHandler({ ...state, inputValue: inputValue });
   };
 
   const handleKeyDown = (event) => {
-    const { inputValue, value } = props.formState;
-    if (!inputValue) return;
-    if((event.key=="Enter"||event.key=="Tab")&&!ValidateEmail(inputValue)){
-      console.log("hi")
-        event.preventDefault();
-        return;
+    if (!state.inputValue) return;
+    if (
+      (event.key === "Enter" || event.key === "Tab" || event.key === "Space") &&
+      !ValidateEmail(state.inputValue)
+    ) {
+      event.preventDefault();
+      return;
     }
+
     switch (event.key) {
-      case 'Enter':
-      case 'Tab':
-        console.group('Value Added');
-        console.log(value);
-        console.groupEnd();
-        let arr;
-        if(value==null){
-          arr = [createOption(inputValue)]
-        }
-        else{
-          arr = [...value,createOption(inputValue)]
-        }
-        props.formHandler({
-          ...props.formState,
-          inputValue: '',
-          value: arr,
+      case "Enter" || "Tab" || "Space":
+        setMailErr("");
+        stateHandler({
+          inputValue: "",
+          value: [...state.value, createOption(state.inputValue)],
         });
-        setmailerr("")
-        props.setmembererr("")
+        let oldValues = state.value.map((item) => item.label);
+        props.memberListHandler([...oldValues, state.inputValue]);
         event.preventDefault();
+        break;
+      default:
+        break;
     }
-    
-  }
-    return (
-      <>
+  };
+  return (
+    <>
       <CreatableSelect
         components={components}
-        inputValue={inputValue}
+        inputValue={state.inputValue}
         isClearable
         isMulti
         menuIsOpen={false}
@@ -78,14 +80,15 @@ function CreatableInputOnly(props){
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         placeholder="Members"
-        value={value}
+        value={state.value}
       />
-      {props.membererr!=""&&<div class="alert alert-danger" role="alert">{props.membererr}</div>}
-      {mailerr!=""&&<div class="alert alert-danger" role="alert">{mailerr}</div>}'
-      
-      </>
-    );
-  }
+      {mailErr !== "" && (
+        <div className="alert alert-danger" role="alert">
+          {mailErr}
+        </div>
+      )}
+    </>
+  );
+}
 
-  export default CreatableInputOnly;
-
+export default CreatableInputOnly;

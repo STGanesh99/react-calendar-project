@@ -1,7 +1,6 @@
-import React, {useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./UpdateModalStyles";
 import {
-  withStyles,
   Fade,
   Backdrop,
   Modal,
@@ -12,71 +11,48 @@ import {
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CreatableInputOnly from "./memberbox"
-import "./warnmessages.css"
-
-var uniqid = require('uniqid');
+import CreatableInputOnly from "./Memberbox";
+import { isAfter } from "date-fns";
 
 function TransitionsModal(props) {
   const classes = styles();
-  var [timeerr,settimeerr] = useState(""); 
-  const [membererr,setmembererr] = useState("");
-  var t = false;
-  t = (props.data
-    && Object.keys(props.data).length === 0 && props.data.constructor === Object)
-  const [formState, formHandler] = useState({});
-  useEffect(()=>{
-    if(!(props.data
-      && Object.keys(props.data).length === 0 && props.data.constructor === Object)){
-        formHandler(props.data)
-        console.log(formState)
-      }
-    else{
-       var enddate = new Date(props.date.valueOf())
-       enddate.setMinutes(enddate.getMinutes()+30)
-      formHandler({start: props.date, end:enddate ,inputValue:"",value:[]})
-    } 
-  },[props.data,props.date])
+  const [timeErr, setTimeErr] = useState(false);
+  const [memberErr, setMemberErr] = useState(false);
+  const [formState, formHandler] = useState(props.data);
 
+  useEffect(() => {
+    formHandler(props.data);
+  }, [props.data]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    var d1 = new Date(formState.start)
-    var d2= new Date(formState.end)
-    console.log(d1,d2)
-    if(d1>d2){
-      settimeerr("Please select a Valid Timeline!")
+    if (isAfter(formState.start, formState.end)) {
+      setTimeErr(true);
       return;
     }
-    if(formState.value.length==0){
-        setmembererr("Please add Member's for the Event")
-        return;
+    if (!formState.members.length) {
+      setMemberErr(true);
+      return;
     }
-    if(t){
-    formState.id = uniqid();
-    props.formHandler(formState);
-    }
-    else{
-      var deleteid = formState.id;
-      var afterdelete = props.events.filter(function(obj){
-        return obj.id!=deleteid
-      })
-      formHandler({start: new Date(), end: new Date(),inputValue:"",value:[]})
-      props.edit([...afterdelete,formState])
-    }
-    props.settimeerr("")
-    formHandler({})
+    console.log(formState);
+
+    setTimeErr(false);
+    setMemberErr(false);
+    let filteredEventData = props.events.filter(
+      (event) => event.id !== formState.id
+    );
+    props.updateHandler([...filteredEventData, formState]);
     props.handleClose();
   };
 
   const handleChange = (e) => {
     let propertyName = e.target.getAttribute("name");
     let propertyValue = e.target.value;
-    let newObject;
-      newObject = JSON.parse(JSON.stringify(formState));
+    let newObject = { ...formState };
     newObject[propertyName] = propertyValue;
     formHandler(newObject);
   };
+
   return (
     <Modal
       aria-labelledby="simple-modal-title"
@@ -89,19 +65,19 @@ function TransitionsModal(props) {
       BackdropProps={{
         timeout: 500,
       }}
-    >   
+    >
       <Fade in={props.open}>
         <div className={classes.paper}>
-           {t? 
-          <h2 id="transition-modal-title">New Event</h2>:<h2 id="transition-modal-title">Edit Event</h2>
-           }
+          <h3 id="transition-modal-title">
+            {props.data.title ? "Edit Event" : "New Event"}
+          </h3>
           <h4>Details</h4>
-          <form onSubmit={submitHandler}>
+          <form onSubmit={submitHandler} onKeyDown={(e) => e.key !== "Enter"}>
             <TextField
               id="filled-basic"
               name="title"
               label="Title"
-              defaultValue={formState?.title}
+              defaultValue={formState.title}
               required
               onChange={handleChange}
               className={classes.textfield}
@@ -111,7 +87,7 @@ function TransitionsModal(props) {
               select
               name="priority"
               label="Priority"
-              defaultValue={formState?.priority || ""}
+              defaultValue={formState.priority}
               required
               onChange={(e) =>
                 formHandler({ ...formState, priority: e.target.value })
@@ -150,7 +126,7 @@ function TransitionsModal(props) {
                   label="From"
                   name="start"
                   required
-                  minDate = {new Date()}
+                  minDate={new Date()}
                   value={formState.start}
                   onChange={(date) =>
                     formHandler({ ...formState, start: date })
@@ -172,8 +148,12 @@ function TransitionsModal(props) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              {timeerr!=""&&<div class="alert alert-warning" role="alert">{timeerr}</div>}
-              </div>
+              {timeErr && (
+                <div className="alert alert-danger">
+                  Please select a Valid Timeline!
+                </div>
+              )}
+            </div>
             <h4 style={{ margin: "20px 0" }}>More information</h4>
             <TextField
               id="outlined-basic"
@@ -188,10 +168,21 @@ function TransitionsModal(props) {
             />
             <br />
             <h4 style={{ margin: "20px 0" }}>Attendees</h4>
-            <div style={{width:'400px'}}>
-            <CreatableInputOnly formHandler={(obj)=>formHandler(obj)} formState = {formState} membererr={membererr}
-                  setmembererr = {setmembererr}
-            />
+            <div style={{ width: "400px" }}>
+              <CreatableInputOnly
+                memberListHandler={(memberList) =>
+                  formHandler({
+                    ...formState,
+                    members: memberList,
+                  })
+                }
+                memberState={formState.members}
+              />
+              {memberErr && (
+                <div className="alert alert-danger">
+                  Add atleast one Member!
+                </div>
+              )}
             </div>
             <div style={{ marginTop: "15px" }}>
               <Button
@@ -202,12 +193,9 @@ function TransitionsModal(props) {
               >
                 Close
               </Button>
-              {t&&<Button variant="outlined" color="primary" type="submit">
-                Add event
-              </Button>}
-              {!t&&<Button variant="outlined" color="primary" type="submit">
-                Save
-              </Button>}
+              <Button variant="outlined" color="primary" type="submit">
+                {formState.title.length ? "Save" : "Add event"}
+              </Button>
             </div>
           </form>
         </div>
@@ -216,4 +204,4 @@ function TransitionsModal(props) {
   );
 }
 
-export default withStyles(styles)(TransitionsModal);
+export default TransitionsModal;

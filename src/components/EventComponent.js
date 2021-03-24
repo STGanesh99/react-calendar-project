@@ -1,23 +1,23 @@
 import React, { useState, useRef } from "react";
 import { Paper, Popover, Button } from "@material-ui/core";
 
-
 export default function MyEvent(props) {
   const [popupState, setPopupState] = useState(false);
   const eventRef = useRef(null);
+
   const editHandler = () => {
     props.modalDataHandler(props.event);
-    props.showModal(true);
+    props.showUpdateModal(true);
     setPopupState(false);
-    };
+  };
 
-  const deleteEvent = ()=>{
+  const deleteEvent = () => {
     var id = props.event.id;
-    var updated = props.events.filter((event)=>{
-            return id!=event.id
-    })
-    props.setevents(updated)
-  }  
+    var updated = props.events.filter((event) => {
+      return id !== event.id;
+    });
+    props.setEvents(updated);
+  };
   return (
     <div>
       <Popover

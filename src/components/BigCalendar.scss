@@ -3,6 +3,36 @@
 body {
   font-family: "Open Sans" !important;
 }
+.makeStyles-paper-2:focus,
+.makeStyles-paper-6:focus,
+.makeStyles-paper-14:focus,
+.makeStyles-paper-18:focus {
+  outline: none !important;
+}
+.alert {
+  width: 70%;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.alert.alert-danger {
+  background-color: rgba(248, 215, 218, 1);
+  border-color: rgba(220, 53, 69, 1);
+  color: rgba(114, 28, 36, 1);
+  margin-top: 20px;
+}
+
+.alert.alert-warning {
+  background-color: rgba(252, 248, 227, 1);
+  border-color: rgba(177, 161, 129, 1);
+  color: rgba(138, 109, 59, 1);
+}
+
 .rbc-month-view {
   margin: 10px 5% !important;
   width: unset !important;

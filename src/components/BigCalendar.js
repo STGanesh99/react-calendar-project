@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
+import {
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  isBefore,
+  addMinutes,
+} from "date-fns";
 import eventList from "../sampleData.json";
-import "./BigCalendar.scss";
 import { Button } from "@material-ui/core";
 import UpdateModal from "./UpdateModal";
+import ShowModal from "./ShowModal";
 import EventComponent from "./EventComponent";
-import Toolbar from "./toolbar"
+import HeaderComponent from "./HeaderComponent";
+import uniqid from "uniqid";
+import "./BigCalendar.scss";
 
 const locales = {
-  "en-US": require("date-fns/locale/en-US"),
+  "en-US": import("date-fns/locale/en-US"),
 };
 
 const localizer = dateFnsLocalizer({
@@ -23,58 +29,98 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-
 const MyCalendar = () => {
-  const [showModalState, setShowModalState] = useState(false);
-  const [modalData, setModalData] = useState({});
+  const defaultEventData = {
+    id: uniqid(),
+    title: "",
+    priority: "",
+    start: new Date(),
+    end: addMinutes(new Date(), 30),
+    description: "",
+    owner: "",
+    members: [],
+  };
+
   const [eventData, setEventData] = useState(eventList);
-  const [date,setDate] = useState(new Date())
-  
+  const [updateModalState, setUpdateModalState] = useState(false);
+  const [showModalState, setShowModalState] = useState(false);
+  const [updateModalData, setUpdateModalData] = useState(defaultEventData);
+  const [showModalData, setShowModalData] = useState({
+    date: new Date(),
+    events: [],
+  });
+  const [date, setDate] = useState(new Date());
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Button
         style={{ alignSelf: "flex-end" }}
-        onClick={() => setShowModalState(true)}
+        onClick={() => setUpdateModalState(true)}
       >
         + Add new Task
       </Button>
       <UpdateModal
-        open={showModalState}
-        handleClose={() => {setShowModalState(false);
-        setModalData({});}}
-        formHandler={(formData) => {setEventData([...eventData, formData])
-        console.log(formData)
+        open={updateModalState}
+        handleClose={() => {
+          setUpdateModalState(false);
+          setUpdateModalData(defaultEventData);
         }}
-        data={modalData}
+        data={updateModalData}
         events={eventList}
-        date = {date} 
-        edit = {(events)=>{setEventData(events)}}
+        updateHandler={setEventData}
+      />
+      <ShowModal
+        open={showModalState}
+        handleClose={() => {
+          setShowModalState(false);
+          setShowModalData({ date: new Date(), events: [] });
+        }}
+        data={showModalData}
+        showUpdateModal={setUpdateModalState}
+        modalDataHandler={(formData) =>
+          setUpdateModalData({ ...defaultEventData, ...formData })
+        }
+        events={eventData}
+        setEvents={setEventData}
       />
       <Calendar
         localizer={localizer}
         views={["month"]}
         events={eventData}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor={(e) => new Date(e.start)}
+        endAccessor={(e) => new Date(e.end)}
         style={{ height: 600 }}
         eventPropGetter={(event) => ({
           className: `priority-${event.priority}`,
         })}
-        popup = {true}
+        dayPropGetter={(date) => ({
+          className: isBefore(date, new Date()) && "rbc-off-range-bg",
+        })}
         date={date}
+        onNavigate={() => {}}
+        onShowMore={(events, date) => {
+          setShowModalData({ date: date, events: events });
+          setShowModalState(true);
+        }}
         components={{
           event: (props) => (
             <EventComponent
               {...props}
-              showModal={setShowModalState}
-              modalDataHandler={setModalData}
-              events ={eventData}
-              setevents = {setEventData} 
+              showUpdateModal={setUpdateModalState}
+              modalDataHandler={(formData) =>
+                setUpdateModalData({ ...defaultEventData, ...formData })
+              }
+              events={eventData}
+              setEvents={setEventData}
             />
           ),
-          toolbar:(props)=>(
-            <Toolbar {...props} date = {date} setDate={(d)=>setDate(d)} />
-          )  
+          toolbar: (props) => (
+            <HeaderComponent
+              {...props}
+              date={date}
+              setDate={(d) => setDate(d)}
+            />
+          ),
         }}
       />
     </div>
