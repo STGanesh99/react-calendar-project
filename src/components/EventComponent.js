@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
-import { Paper, Popover, Button } from "@material-ui/core";
+import { Popover, Button } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from "@material-ui/icons/Edit";
 export default function MyEvent(props) {
   const [popupState, setPopupState] = useState(false);
   const eventRef = useRef(null);
@@ -33,15 +34,19 @@ export default function MyEvent(props) {
           horizontal: "left",
         }}
       >
-        <Paper  style={{width:"200px",margin:"10px",padding:"10px"}}>
-          <div style={{display:"flex"}}>
-            <Button onClick={editHandler} color="primary">Edit Event</Button>
-            <Button onClick={deleteEvent} color="secondary" style={{marginLeft:"30px"}}><DeleteIcon/></Button>
+        <div style={{ padding: "10px", minWidth: "200px" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={editHandler} color="primary">
+              <EditIcon />
+            </Button>
+            <Button onClick={deleteEvent} color="secondary">
+              <DeleteIcon />
+            </Button>
           </div>
           <div>
-            {props.event.title.length>23?<p>{props.event.title.substring(0,24)}...</p>:<p>{props.event.title}</p>}
+            {props.event.title}
           </div>
-        </Paper>
+        </div>
       </Popover>
       <div ref={eventRef} onClick={() => setPopupState(true)}>
         {props.event.title}

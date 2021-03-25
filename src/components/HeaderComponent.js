@@ -1,11 +1,15 @@
 import React from "react";
 import { Button } from "@material-ui/core";
-import { isAfter } from "date-fns";
-import { KeyboardDatePicker,DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { isAfter, format } from "date-fns";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import EventIcon from '@material-ui/icons/Event';
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import AddIcon from "@material-ui/icons/Add";
+
 const Toolbar = (props) => {
   const goToBack = () => {
     let mDate = props.date;
@@ -26,56 +30,9 @@ const Toolbar = (props) => {
     );
     props.setDate(newDate);
   };
-   
-  const getm = (num)=>{
-    var b;
-    switch(num+1){
-      case 1: b = "January";
-          break;
-      case 2: b = "February";
-          break;
-      case 3: b = "March";
-          break;
-      case 4: b = "April";
-          break;
-      case 5: b = "May";
-          break;
-      case 6: b = "June"; 
-          break;
-      case 7: b = "July";
-          break;
-      case 8: b = "August";
-          break;
-      case 9: b = "September";
-          break;
-      case 10: b = "October";
-          break;
-      case 11: b = "November";
-          break;
-      case 12: b = "December";
-          break;
-      }
-      return b;
-  }
-  
+
   return (
-    <div className="toolbar-container" style={{display:"flex",marginBottom:"10px"}}>
-      <div className="navigation-buttons" style= {{display:"flex",marginLeft:"70px"}}>
-       <div style={{margin:"11px"}}>
-        {isAfter(props.date, new Date()) && (
-          <Button onClick={goToBack}> <ChevronLeftIcon style={{fontSize:"40px",color:"#0099FF"}}/></Button>
-        )}
-        </div>
-        <div style={{margin:"10px"}}>
-        <Button onClick={goToNext}>
-        <ChevronRightIcon style={{fontSize:"40px",color:"#0099FF"}}/>
-        </Button>
-        </div>
-        </div>
-        <div style={{marginLeft:"44%",position:"absolute",fontSize:"30px",fontWeight:"bolder"}}>
-        <p>{getm(props.date.getMonth())} {props.date.getFullYear()}</p>
-        </div>
-      <div style={{marginLeft:"75%",position:'absolute'}}>
+    <div className="toolbar-container">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           variant="inline"
@@ -84,12 +41,48 @@ const Toolbar = (props) => {
           onChange={props.setDate}
           minDate={new Date()}
           inputVariant="outlined"
-          style={{width:"200px"}}
-          label="Select"
+          style={{ width: "auto" }}
           format="MM/yyyy"
           InputProps={{ readOnly: true }}
-          />
+        />
       </MuiPickersUtilsProvider>
+      <p
+        style={{
+          fontWeight: "bolder",
+          fontSize: "2rem",
+        }}
+      >
+        {format(new Date(props.date), "MMMM")} {props.date.getFullYear()}
+      </p>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginLeft: "-20px",
+          flexWrap: "wrap",
+        }}
+      >
+        <Button disabled={!isAfter(props.date, new Date())} onClick={goToBack}>
+          <ChevronLeftIcon style={{ fontSize: "25px" }} />
+        </Button>
+        <Button style={{ marginRight: "10px" }} onClick={goToNext}>
+          <ChevronRightIcon style={{ fontSize: "25px" }} />
+        </Button>
+        <Button
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontSize: "15px",
+            borderRadius: ".3rem",
+            marginLeft: "10px",
+            color:"white"
+          }}
+          variant="outlined"
+          onClick={() => props.showUpdateModal(true)}
+        >
+          <AddIcon style={{ fontSize: "25px" }} />
+          <span>Create New Event</span>
+        </Button>
       </div>
     </div>
   );

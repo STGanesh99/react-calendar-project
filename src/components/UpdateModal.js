@@ -11,7 +11,7 @@ import {
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import {KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CreatableInputOnly from "./memberbox";
+import CreatableInputOnly from "./Memberbox";
 import { isAfter } from "date-fns";
 
 function TransitionsModal(props) {

@@ -9,7 +9,6 @@ import {
   addMinutes,
 } from "date-fns";
 import eventList from "../sampleData.json";
-import { Button, Tab } from "@material-ui/core";
 import UpdateModal from "./UpdateModal";
 import ShowModal from "./ShowModal";
 import EventComponent from "./EventComponent";
@@ -52,17 +51,7 @@ const MyCalendar = () => {
   const [date, setDate] = useState(new Date());
 
   return (
-    <div style={{ display: "flex", flexDirection: "column",margin:"20px",fontFamily:"'Comic Neue', cursive",
-   
-    }}>
-      <Button
-        style={{ alignSelf: "flex-end" ,borderRadius:"50%",color:"#0099FF"}}
-        onClick={() => setUpdateModalState(true)}  
-      >
-       <div>
-        <i class="fas fa-plus fa-3x"></i>
-        </div>
-      </Button>
+    <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
       <UpdateModal
         open={updateModalState}
         handleClose={() => {
@@ -93,12 +82,12 @@ const MyCalendar = () => {
         events={eventData}
         startAccessor={(e) => new Date(e.start)}
         endAccessor={(e) => new Date(e.end)}
-        style={{height:"600px"}}
+        style={{ height: 675 }}
         eventPropGetter={(event) => ({
           className: `priority-${event.priority}`,
         })}
         dayPropGetter={(date) => ({
-          className: isBefore(date, new Date()) && "rbc-off-range-bg"
+          className: isBefore(date, new Date()) && "rbc-off-range-bg",
         })}
         date={date}
         onNavigate={() => {}}
@@ -121,6 +110,7 @@ const MyCalendar = () => {
           toolbar: (props) => (
             <HeaderComponent
               {...props}
+              showUpdateModal={setUpdateModalState}
               date={date}
               setDate={(d) => setDate(d)}
             />
