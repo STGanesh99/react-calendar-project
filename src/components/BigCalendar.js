@@ -9,7 +9,7 @@ import {
   addMinutes,
 } from "date-fns";
 import eventList from "../sampleData.json";
-import { Button } from "@material-ui/core";
+import { Button, Tab } from "@material-ui/core";
 import UpdateModal from "./UpdateModal";
 import ShowModal from "./ShowModal";
 import EventComponent from "./EventComponent";
@@ -52,12 +52,16 @@ const MyCalendar = () => {
   const [date, setDate] = useState(new Date());
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column",margin:"20px",fontFamily:"'Comic Neue', cursive",
+   
+    }}>
       <Button
-        style={{ alignSelf: "flex-end" }}
-        onClick={() => setUpdateModalState(true)}
+        style={{ alignSelf: "flex-end" ,borderRadius:"50%",color:"#0099FF"}}
+        onClick={() => setUpdateModalState(true)}  
       >
-        + Add new Task
+       <div>
+        <i class="fas fa-plus fa-3x"></i>
+        </div>
       </Button>
       <UpdateModal
         open={updateModalState}
@@ -89,12 +93,12 @@ const MyCalendar = () => {
         events={eventData}
         startAccessor={(e) => new Date(e.start)}
         endAccessor={(e) => new Date(e.end)}
-        style={{ height: 600 }}
+        style={{height:"600px"}}
         eventPropGetter={(event) => ({
           className: `priority-${event.priority}`,
         })}
         dayPropGetter={(date) => ({
-          className: isBefore(date, new Date()) && "rbc-off-range-bg",
+          className: isBefore(date, new Date()) && "rbc-off-range-bg"
         })}
         date={date}
         onNavigate={() => {}}

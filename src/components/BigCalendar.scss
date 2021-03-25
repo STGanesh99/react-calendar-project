@@ -46,6 +46,9 @@ body {
 .rbc-day-bg:not(.rbc-off-range-bg):hover {
   background-color: rgba(245, 216, 120, 0.315) !important;
 }
+.rbc-day-bg{
+  background-color:"white";
+}
 .priority-high {
   background-color: rgba(253, 48, 48, 0.897) !important;
 }

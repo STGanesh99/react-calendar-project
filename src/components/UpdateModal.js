@@ -9,9 +9,9 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CreatableInputOnly from "./Memberbox";
+import CreatableInputOnly from "./memberbox";
 import { isAfter } from "date-fns";
 
 function TransitionsModal(props) {
@@ -121,7 +121,7 @@ function TransitionsModal(props) {
             </TextField>
             <div style={{ marginTop: "20px" }}>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DateTimePicker
+                <KeyboardDateTimePicker
                   variant="inline"
                   label="From"
                   name="start"
@@ -133,9 +133,11 @@ function TransitionsModal(props) {
                   }
                   style={{
                     marginRight: "20px",
+                    width:"225px"
                   }}
+                  InputProps={{ readOnly: true }}
                 />
-                <DateTimePicker
+                <KeyboardDateTimePicker
                   variant="inline"
                   label="To"
                   name="end"
@@ -145,7 +147,9 @@ function TransitionsModal(props) {
                   onChange={(date) => formHandler({ ...formState, end: date })}
                   style={{
                     marginRight: "20px",
+                    width:"225px"
                   }}
+                  InputProps={{ readOnly: true }}
                 />
               </MuiPickersUtilsProvider>
               {timeErr && (
@@ -164,11 +168,11 @@ function TransitionsModal(props) {
               name="desc"
               defaultValue={formState?.desc}
               onChange={handleChange}
-              style={{ width: "400px" }}
+              style={{ width: "460px" }}
             />
             <br />
             <h4 style={{ margin: "20px 0" }}>Attendees</h4>
-            <div style={{ width: "400px" }}>
+            <div style={{ width: "460px" }}>
               <CreatableInputOnly
                 memberListHandler={(memberList) =>
                   formHandler({
