@@ -11,8 +11,10 @@ import {
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import {KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CreatableInputOnly from "./Memberbox";
+import CreatableInputOnly from "./memberbox";
 import { isAfter } from "date-fns";
+import axios from "axios"
+
 
 function TransitionsModal(props) {
   const classes = styles();
@@ -35,7 +37,6 @@ function TransitionsModal(props) {
       return;
     }
     console.log(formState);
-
     setTimeErr(false);
     setMemberErr(false);
     let filteredEventData = props.events.filter(

@@ -64,4 +64,12 @@
   background-color: rgba(77, 202, 108, 0.897) !important;
 }
 
+.login{
+  text-align:center;
+}
+
+.emailinput:focus{
+  outline: none
+}
+
 @import "react-big-calendar/lib/sass/styles";

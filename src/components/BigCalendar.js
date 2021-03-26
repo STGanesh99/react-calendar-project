@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import {
   format,
@@ -8,14 +8,19 @@ import {
   isBefore,
   addMinutes,
 } from "date-fns";
-import eventList from "../sampleData.json";
+
 import UpdateModal from "./UpdateModal";
 import ShowModal from "./ShowModal";
 import EventComponent from "./EventComponent";
 import HeaderComponent from "./HeaderComponent";
 import uniqid from "uniqid";
 import "./BigCalendar.scss";
-
+import { useLocation } from "react-router-dom";
+import {
+  useHistory
+} from "react-router-dom";
+import axios from 'axios';
+import {CircularProgress} from '@material-ui/core'
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -29,6 +34,22 @@ const localizer = dateFnsLocalizer({
 });
 
 const MyCalendar = () => {
+  const history = useHistory();
+  const location = useLocation();
+  const [eventData, setEventData] = useState([]);
+  const [spinner,setspinner] = useState(true)
+  useEffect(()=>{
+     if(location.state==undefined){
+       history.replace("/")
+     }
+     setTimeout(()=>{
+     axios.get("sampleData.json")
+     .then(res => {
+       const persons = res.data;
+       setEventData(persons)
+       setspinner(false)
+     })},2000)
+  },[location.state])
   const defaultEventData = {
     id: uniqid(),
     title: "",
@@ -36,11 +57,9 @@ const MyCalendar = () => {
     start: new Date(),
     end: addMinutes(new Date(), 30),
     description: "",
-    owner: "",
+    owner: location.state?.email,
     members: [],
   };
-
-  const [eventData, setEventData] = useState(eventList);
   const [updateModalState, setUpdateModalState] = useState(false);
   const [showModalState, setShowModalState] = useState(false);
   const [updateModalData, setUpdateModalData] = useState(defaultEventData);
@@ -49,9 +68,9 @@ const MyCalendar = () => {
     events: [],
   });
   const [date, setDate] = useState(new Date());
-
   return (
     <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+    {spinner&&<div style={{textAlign:"center",margin:"300px"}}><CircularProgress size="10rem"/></div>}
       <UpdateModal
         open={updateModalState}
         handleClose={() => {
@@ -59,7 +78,7 @@ const MyCalendar = () => {
           setUpdateModalData(defaultEventData);
         }}
         data={updateModalData}
-        events={eventList}
+        events={eventData}
         updateHandler={setEventData}
       />
       <ShowModal
@@ -76,7 +95,7 @@ const MyCalendar = () => {
         events={eventData}
         setEvents={setEventData}
       />
-      <Calendar
+      {!spinner&&<Calendar
         localizer={localizer}
         views={["month"]}
         events={eventData}
@@ -116,7 +135,7 @@ const MyCalendar = () => {
             />
           ),
         }}
-      />
+      />}
     </div>
   );
 };
