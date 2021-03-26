@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Popover, Button } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import { isSameDay, format } from "date-fns";
+
 export default function MyEvent(props) {
   const [popupState, setPopupState] = useState(false);
   const eventRef = useRef(null);
@@ -19,6 +21,9 @@ export default function MyEvent(props) {
     });
     props.setEvents(updated);
   };
+
+  let startDate = new Date(props.event.start);
+  let endDate = new Date(props.event.end);
   return (
     <div>
       <Popover
@@ -44,7 +49,16 @@ export default function MyEvent(props) {
             </Button>
           </div>
           <div>
-            {props.event.title}
+            <p>{props.event.title}</p>
+            <p>
+              {isSameDay(startDate, endDate)
+                ? format(startDate, "hh:mm aaa") +
+                  " - " +
+                  format(endDate, "hh:mm aaa")
+                : format(startDate, "d/MM/yy") +
+                  " - " +
+                  format(endDate, "d/MM/yy")}
+            </p>
           </div>
         </div>
       </Popover>

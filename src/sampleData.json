@@ -47,5 +47,12 @@
     "priority": "low",
     "start": "2021-04-19T16:30",
     "end": "2021-04-19T17:30"
+  },
+  {
+    "id": "#8",
+    "title": "Go for jogging",
+    "priority": "low",
+    "start": "2021-04-19T16:30",
+    "end": "2021-04-19T17:30"
   }
 ]
