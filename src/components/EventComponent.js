@@ -41,9 +41,9 @@ export default function MyEvent(props) {
       >
         <div style={{ padding: "10px", minWidth: "200px" }}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={editHandler} color="primary">
+            {startDate>new Date()&&<Button onClick={editHandler} color="primary">
               <EditIcon />
-            </Button>
+            </Button>}
             <Button onClick={deleteEvent} color="secondary">
               <DeleteIcon />
             </Button>
@@ -59,6 +59,7 @@ export default function MyEvent(props) {
                   " - " +
                   format(endDate, "d/MM/yy")}
             </p>
+            <p>Organized by : {props.event.owner}</p>
           </div>
         </div>
       </Popover>

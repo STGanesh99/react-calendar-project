@@ -36,7 +36,7 @@ function TransitionsModal(props) {
       setMemberErr(true);
       return;
     }
-    console.log(formState);
+    console.log(formState.start);
     setTimeErr(false);
     setMemberErr(false);
     let filteredEventData = props.events.filter(

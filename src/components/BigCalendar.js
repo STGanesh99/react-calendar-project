@@ -37,18 +37,22 @@ const MyCalendar = () => {
   const history = useHistory();
   const location = useLocation();
   const [eventData, setEventData] = useState([]);
-  const [spinner,setspinner] = useState(true)
+  const [spinner,setspinner] = useState(true);
+  const [err,seterr] = useState(false);
   useEffect(()=>{
      if(location.state==undefined){
        history.replace("/")
      }
-     setTimeout(()=>{
-     axios.get("sampleData.json")
+      axios.get("sampleData.json")
      .then(res => {
        const persons = res.data;
        setEventData(persons)
        setspinner(false)
-     })},2000)
+     })
+     .catch(err=>{
+       seterr(true);
+       setspinner(false)
+     })
   },[location.state])
   const defaultEventData = {
     id: uniqid(),
@@ -69,7 +73,10 @@ const MyCalendar = () => {
   });
   const [date, setDate] = useState(new Date());
   return (
+    
     <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+    
+    {err&&<h2>Server is down Please try after Sometime .  .  .</h2>}
     {spinner&&<div style={{textAlign:"center",margin:"300px"}}><CircularProgress size="10rem"/></div>}
       <UpdateModal
         open={updateModalState}
@@ -95,7 +102,7 @@ const MyCalendar = () => {
         events={eventData}
         setEvents={setEventData}
       />
-      {!spinner&&<Calendar
+      {!spinner&&!err&&<Calendar
         localizer={localizer}
         views={["month"]}
         events={eventData}
@@ -120,7 +127,7 @@ const MyCalendar = () => {
               {...props}
               showUpdateModal={setUpdateModalState}
               modalDataHandler={(formData) =>
-                setUpdateModalData({ ...defaultEventData, ...formData })
+                setUpdateModalData({ ...defaultEventData, ...formData})
               }
               events={eventData}
               setEvents={setEventData}
@@ -132,6 +139,7 @@ const MyCalendar = () => {
               showUpdateModal={setUpdateModalState}
               date={date}
               setDate={(d) => setDate(d)}
+              owner = {location.state.email}
             />
           ),
         }}

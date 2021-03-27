@@ -9,8 +9,12 @@ import DateFnsUtils from "@date-io/date-fns";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AddIcon from "@material-ui/icons/Add";
+import {
+  useHistory
+} from "react-router-dom";
 
 const Toolbar = (props) => {
+  const history = useHistory();
   const goToBack = () => {
     let mDate = props.date;
     let newDate = new Date(
@@ -32,6 +36,26 @@ const Toolbar = (props) => {
   };
 
   return (
+    <>
+    <div style={{display:"flex"}}>
+    <div style={{marginLeft:"60px",fontSize:"18px"}}>
+    <p>Logged in as :{props.owner}</p>
+    </div>
+    <Button
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontSize: "15px",
+            borderRadius: ".3rem",
+            marginLeft: "10px",
+            color:"white",
+          }}
+          variant="outlined"
+          onClick={() => history.replace("/")}
+        >
+        <span>Log out</span>
+    </Button>
+    </div>
     <div className="toolbar-container">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
@@ -85,6 +109,7 @@ const Toolbar = (props) => {
         </Button>
       </div>
     </div>
+    </>
   );
 };
 

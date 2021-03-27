@@ -4,55 +4,63 @@
     "title": "Create Report on Customer Feedback",
     "priority": "high",
     "start": "2021-04-15T10:30",
-    "end": "2021-04-16T12:00"
+    "end": "2021-04-16T12:00",
+    "owner":"Ganesh"
   },
   {
     "id": "#2",
     "title": "Review Customer Feedback Report",
     "priority": "high",
     "start": "2021-04-05T12:15",
-    "end": "2021-04-07T13:30"
+    "end": "2021-04-07T13:30",
+    "owner":"Srihari"
   },
   {
     "id": "#3",
     "title": "Google AdWords Strategy",
     "priority": "low",
-    "start": "2021-04-28T09:30",
-    "end": "2021-04-30T11:30"
+    "start": "2021-03-01T09:30",
+    "end": "2021-03-02T11:30",
+    "owner":"Srihari"
   },
   {
     "id": "#4",
     "title": "Create New Task",
     "priority": "medium",
     "start": "2021-04-15T09:30",
-    "end": "2021-04-15T11:30"
+    "end": "2021-04-15T11:30",
+    "owner":"Srihari"
   },
   {
     "id": "#5",
     "title": "Rollout of New Website and Marketing Brochures",
     "priority": "low",
     "start": "2021-04-19T10:30",
-    "end": "2021-04-19T12:30"
+    "end": "2021-04-19T12:30",
+    "owner":"Gandu"
   },
   {
     "id": "#6",
     "title": "File Income tax returns",
     "priority": "high",
     "start": "2021-04-19T09:30",
-    "end": "2021-04-19T10:30"
+    "end": "2021-04-19T10:30",
+    "owner":"Srihari"
   },
   {
     "id": "#7",
     "title": "Go for jogging",
     "priority": "low",
     "start": "2021-04-19T16:30",
-    "end": "2021-04-19T17:30"
+    "end": "2021-04-19T17:30",
+    "owner":"Srihari"
   },
   {
     "id": "#8",
     "title": "Go for jogging",
     "priority": "low",
     "start": "2021-04-19T16:30",
-    "end": "2021-04-19T17:30"
+    "end": "2021-04-19T17:30",
+    "owner":"Srihari"
   }
 ]

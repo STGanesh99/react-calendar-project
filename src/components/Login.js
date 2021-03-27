@@ -9,7 +9,7 @@ const Login = ()=>{
     let [email,setemail]  = useState("")
     const history = useHistory()
 const submit = ()=>{
-       history.push({
+       history.replace({
            pathname:"/calendar",
            state:{email:email}
        })

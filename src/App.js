@@ -10,7 +10,7 @@ import Login from "./components/Login"
 
 function App() {
   return (
-    <Router>
+    <Router basename="/calendar">
     <Switch>
     <div className="App">
     <Route path="/calendar" component={()=><BigCalendar/>} />
