@@ -14,7 +14,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import CreatableInputOnly from "./memberbox";
 import { isAfter } from "date-fns";
 import axios from "axios"
-
+import CloseIcon from '@material-ui/icons/Close';
 
 function TransitionsModal(props) {
   const classes = styles();
@@ -55,6 +55,7 @@ function TransitionsModal(props) {
   };
 
   return (
+    <div style={{display:"flex"}}>
     <Modal
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
@@ -69,9 +70,19 @@ function TransitionsModal(props) {
     >
       <Fade in={props.open}>
         <div className={classes.paper}>
+        <div style={{display:"flex"}}>
           <h3 id="transition-modal-title">
             {props.data.title ? "Edit Event" : "New Event"}
           </h3>
+          <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",flex:1}}>
+          <Button
+                color="secondary"
+                onClick={props.handleClose}
+              >
+                <CloseIcon/>
+              </Button>
+            </div>
+          </div>
           <h4>Details</h4>
           <form onSubmit={submitHandler} onKeyDown={(e) => e.key !== "Enter"}>
             <TextField
@@ -190,14 +201,6 @@ function TransitionsModal(props) {
               )}
             </div>
             <div style={{ marginTop: "15px" }}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={props.handleClose}
-                style={{ marginRight: "20px" }}
-              >
-                Close
-              </Button>
               <Button variant="outlined" color="primary" type="submit">
                 {formState.title.length ? "Save" : "Add event"}
               </Button>
@@ -206,6 +209,7 @@ function TransitionsModal(props) {
         </div>
       </Fade>
     </Modal>
+    </div>
   );
 }
 

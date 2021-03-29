@@ -37,24 +37,27 @@ const Toolbar = (props) => {
 
   return (
     <>
-    <div style={{display:"flex"}}>
+    <div style={{display:"flex",flexWrap:"wrap",justifyContent:"space-between"}}>
     <div style={{marginLeft:"60px",fontSize:"18px"}}>
     <p>Logged in as :{props.owner}</p>
     </div>
-    <Button
-          style={{
+    <div    style={{
             display: "flex",
-            alignItems: "center",
+            alignItems:"center",
             fontSize: "15px",
             borderRadius: ".3rem",
-            marginLeft: "10px",
             color:"white",
-          }}
+            justifyContent:"flex-end",
+            flex:"1",
+            marginRight:"50px"
+          }}>
+    <Button
           variant="outlined"
           onClick={() => history.replace("/")}
         >
         <span>Log out</span>
     </Button>
+    </div>
     </div>
     <div className="toolbar-container">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -70,14 +73,6 @@ const Toolbar = (props) => {
           InputProps={{ readOnly: true }}
         />
       </MuiPickersUtilsProvider>
-      <p
-        style={{
-          fontWeight: "bolder",
-          fontSize: "2rem",
-        }}
-      >
-        {format(new Date(props.date), "MMMM")} {props.date.getFullYear()}
-      </p>
       <div
         style={{
           display: "flex",
@@ -86,12 +81,23 @@ const Toolbar = (props) => {
           flexWrap: "wrap",
         }}
       >
-        <Button disabled={!isAfter(props.date, new Date())} onClick={goToBack}>
+       <Button disabled={!isAfter(props.date, new Date())} onClick={goToBack}>
           <ChevronLeftIcon style={{ fontSize: "25px" }} />
-        </Button>
+      </Button>
+        <p
+        style={{
+          fontWeight: "bolder",
+          fontSize: "2rem",
+          alignItems:"center",
+          display:"flex"
+        }}
+      >
+        {format(new Date(props.date), "MMMM")} {props.date.getFullYear()}
+      </p>
         <Button style={{ marginRight: "10px" }} onClick={goToNext}>
           <ChevronRightIcon style={{ fontSize: "25px" }} />
         </Button>
+        </div>
         <Button
           style={{
             display: "flex",
@@ -107,7 +113,6 @@ const Toolbar = (props) => {
           <AddIcon style={{ fontSize: "25px" }} />
           <span>Create New Event</span>
         </Button>
-      </div>
     </div>
     </>
   );

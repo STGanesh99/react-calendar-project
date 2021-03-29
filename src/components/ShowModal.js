@@ -13,7 +13,8 @@ import { format } from "date-fns";
 import styles from "./ShowModalStyles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { isBefore } from "date-fns";
-
+import SimpleAccordion from "./showmore"
+import CloseIcon from '@material-ui/icons/Close';
 export default function SimpleModal(props) {
   const classes = styles();
   useEffect(() => {}, [props.data.events]);
@@ -50,66 +51,45 @@ export default function SimpleModal(props) {
     >
       <Fade in={props.open}>
         <div className={classes.paper}>
+          <div style={{display:"flex"}}>
           <h3>Events at {format(props.data.date, "d/MM/yy")}</h3>
+          <div style={{display:"flex",flex:"1",justifyContent:'flex-end'}}>
+          <Button onClick={() => props.handleClose()}><CloseIcon/></Button>
+          </div>
+          </div>
+          <h3>Active Events</h3>
           <div className={classes.container}>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography className={classes.heading}>
-                  Active Events
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
                 {activeEvents.length ? (
                   <div style={{ display: "block" }}>
                     {activeEvents.map((event) => (
-                      <div key={event.id}>
-                        <Typography variant="subtitle1">
-                          {event.title}
-                        </Typography>
-                        <Button onClick={() => editHandler(event)}>Edit</Button>
-                        <Button onClick={() => deleteHandler(event.id)}>
-                          Delete
-                        </Button>
-                      </div>
+                      <div key={event.id}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header">
+                        <SimpleAccordion title={event.title} edit={()=>editHandler(event)} delete={()=>deleteHandler(event)}/>
+                        </div>
                     ))}
                   </div>
                 ) : (
                   <Typography>No Events</Typography>
                 )}
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography className={classes.heading}>
-                  Expired Events
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
+                <h3>Expired Events</h3> 
                 {expiredEvents.length ? (
                   <div style={{ display: "block" }}>
                     {expiredEvents.map((event) => (
-                      <div key={event.id}>
-                        <Typography variant="subtitle1">
-                          {event.title}
-                        </Typography>
-                      </div>
+                      <div key={event.id}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header">
+                        <SimpleAccordion title={event.title} edit={()=>editHandler(event)} delete={()=>deleteHandler(event)}/>
+                        </div>
                     ))}
                   </div>
                 ) : (
                   <Typography>No Events</Typography>
                 )}
-              </AccordionDetails>
-            </Accordion>
           </div>
-          <Button onClick={() => props.handleClose()}>Close</Button>
+        
         </div>
       </Fade>
     </Modal>

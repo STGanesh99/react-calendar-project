@@ -21,6 +21,7 @@ import {
 } from "react-router-dom";
 import axios from 'axios';
 import {CircularProgress} from '@material-ui/core'
+import { LocalConvenienceStoreOutlined } from "@material-ui/icons";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -105,6 +106,7 @@ const MyCalendar = () => {
       {!spinner&&!err&&<Calendar
         localizer={localizer}
         views={["month"]}
+        selectable={true}
         events={eventData}
         startAccessor={(e) => new Date(e.start)}
         endAccessor={(e) => new Date(e.end)}
@@ -143,7 +145,18 @@ const MyCalendar = () => {
             />
           ),
         }}
+       onSelectSlot = {(props)=>{
+        console.log(date.getMonth(),props.start.getMonth())
+         if(props.start.getMonth()==date.getMonth()&&props.start>new Date()){
+        setUpdateModalState(true);
+        setUpdateModalData({
+          ...updateModalData,
+          start: props.start,
+          end:addMinutes(props.start,30),
+        })}}
+       } 
       />}
+
     </div>
   );
 };
