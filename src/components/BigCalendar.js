@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import {
   format,
@@ -8,20 +8,15 @@ import {
   isBefore,
   addMinutes,
 } from "date-fns";
-
 import UpdateModal from "./UpdateModal";
 import ShowModal from "./ShowModal";
 import EventComponent from "./EventComponent";
 import HeaderComponent from "./HeaderComponent";
 import uniqid from "uniqid";
 import "./BigCalendar.scss";
-import { useLocation } from "react-router-dom";
-import {
-  useHistory
-} from "react-router-dom";
-import axios from 'axios';
-import {CircularProgress} from '@material-ui/core'
-import { LocalConvenienceStoreOutlined } from "@material-ui/icons";
+import { useLocation, Redirect } from "react-router-dom";
+import axios from "axios";
+import { CircularProgress, Snackbar } from "@material-ui/core";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -35,26 +30,24 @@ const localizer = dateFnsLocalizer({
 });
 
 const MyCalendar = () => {
-  const history = useHistory();
   const location = useLocation();
   const [eventData, setEventData] = useState([]);
-  const [spinner,setspinner] = useState(true);
-  const [err,seterr] = useState(false);
-  useEffect(()=>{
-     if(location.state==undefined){
-       history.replace("/")
-     }
-      axios.get("sampleData.json")
-     .then(res => {
-       const persons = res.data;
-       setEventData(persons)
-       setspinner(false)
-     })
-     .catch(err=>{
-       seterr(true);
-       setspinner(false)
-     })
-  },[location.state])
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(false);
+  useEffect(() => {
+    axios
+      .get("sampleData.json")
+      .then((res) => {
+        const persons = res.data;
+        setEventData(persons);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setErr(true);
+        setLoading(false);
+      });
+  }, []);
+
   const defaultEventData = {
     id: uniqid(),
     title: "",
@@ -68,17 +61,39 @@ const MyCalendar = () => {
   const [updateModalState, setUpdateModalState] = useState(false);
   const [showModalState, setShowModalState] = useState(false);
   const [updateModalData, setUpdateModalData] = useState(defaultEventData);
+  const [postUpdateState, setPostUpdateState] = useState(null);
   const [showModalData, setShowModalData] = useState({
     date: new Date(),
     events: [],
   });
   const [date, setDate] = useState(new Date());
   return (
-    
     <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
-    
-    {err&&<h2>Server is down Please try after Sometime .  .  .</h2>}
-    {spinner&&<div style={{textAlign:"center",margin:"300px"}}><CircularProgress size="10rem"/></div>}
+      {!location.state && <Redirect to="/login" />}
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={err}
+        onClose={() => setErr(false)}
+        message="Server is down... Please try later..."
+      />
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={postUpdateState ? true : false}
+        autoHideDuration={6000}
+        onClose={() => setPostUpdateState(null)}
+        message={postUpdateState}
+      />
+      {loading && (
+        <div style={{ textAlign: "center", margin: "300px" }}>
+          <CircularProgress size="10rem" />
+        </div>
+      )}
       <UpdateModal
         open={updateModalState}
         handleClose={() => {
@@ -88,6 +103,7 @@ const MyCalendar = () => {
         data={updateModalData}
         events={eventData}
         updateHandler={setEventData}
+        setMessage={setPostUpdateState}
       />
       <ShowModal
         open={showModalState}
@@ -103,60 +119,66 @@ const MyCalendar = () => {
         events={eventData}
         setEvents={setEventData}
       />
-      {!spinner&&!err&&<Calendar
-        localizer={localizer}
-        views={["month"]}
-        selectable={true}
-        events={eventData}
-        startAccessor={(e) => new Date(e.start)}
-        endAccessor={(e) => new Date(e.end)}
-        style={{ height: 675 }}
-        eventPropGetter={(event) => ({
-          className: `priority-${event.priority}`,
-        })}
-        dayPropGetter={(date) => ({
-          className: isBefore(date, new Date()) && "rbc-off-range-bg",
-        })}
-        date={date}
-        onNavigate={() => {}}
-        onShowMore={(events, date) => {
-          setShowModalData({ date: date, events: events });
-          setShowModalState(true);
-        }}
-        components={{
-          event: (props) => (
-            <EventComponent
-              {...props}
-              showUpdateModal={setUpdateModalState}
-              modalDataHandler={(formData) =>
-                setUpdateModalData({ ...defaultEventData, ...formData})
-              }
-              events={eventData}
-              setEvents={setEventData}
-            />
-          ),
-          toolbar: (props) => (
-            <HeaderComponent
-              {...props}
-              showUpdateModal={setUpdateModalState}
-              date={date}
-              setDate={(d) => setDate(d)}
-              owner = {location.state.email}
-            />
-          ),
-        }}
-       onSelectSlot = {(props)=>{
-        console.log(date.getMonth(),props.start.getMonth())
-         if(props.start.getMonth()==date.getMonth()&&props.start>new Date()){
-        setUpdateModalState(true);
-        setUpdateModalData({
-          ...updateModalData,
-          start: props.start,
-          end:addMinutes(props.start,30),
-        })}}
-       } 
-      />}
-
+      {!loading && !err && (
+        <Calendar
+          localizer={localizer}
+          views={["month"]}
+          selectable={true}
+          events={eventData}
+          startAccessor={(e) => new Date(e.start)}
+          endAccessor={(e) => new Date(e.end)}
+          style={{ height: 675 }}
+          eventPropGetter={(event) => ({
+            className: `priority-${event.priority}`,
+          })}
+          dayPropGetter={(date) => ({
+            className:
+              isBefore(date, new Date()) && "rbc-off-range rbc-off-range-bg",
+          })}
+          date={date}
+          onNavigate={() => {}}
+          onShowMore={(events, date) => {
+            setShowModalData({ date: date, events: events.slice(1) });
+            setShowModalState(true);
+          }}
+          components={{
+            event: (props) => (
+              <EventComponent
+                {...props}
+                showUpdateModal={setUpdateModalState}
+                modalDataHandler={(formData) =>
+                  setUpdateModalData({ ...defaultEventData, ...formData })
+                }
+                events={eventData}
+                setEvents={setEventData}
+              />
+            ),
+            toolbar: (props) => (
+              <HeaderComponent
+                {...props}
+                showUpdateModal={setUpdateModalState}
+                date={date}
+                setDate={(d) => setDate(d)}
+                owner={location.state.email}
+              />
+            ),
+          }}
+          onSelectSlot={(props) => {
+            if (
+              props.start.getMonth() === date.getMonth() &&
+              props.start > new Date()
+            ) {
+              setUpdateModalState(true);
+              setUpdateModalData({
+                ...updateModalData,
+                start: props.start,
+                end: addMinutes(props.start, 30),
+              });
+            }
+          }}
+          messages={{ showMore: () => "View More" }}
+        />
+      )}
     </div>
   );
 };

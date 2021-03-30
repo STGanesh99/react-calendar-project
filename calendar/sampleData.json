@@ -5,7 +5,7 @@
     "priority": "high",
     "start": "2021-04-15T10:30",
     "end": "2021-04-16T12:00",
-    "owner":"Ganesh"
+    "owner": "gyt"
   },
   {
     "id": "#2",
@@ -13,15 +13,15 @@
     "priority": "high",
     "start": "2021-04-05T12:15",
     "end": "2021-04-07T13:30",
-    "owner":"Srihari"
+    "owner": "weq"
   },
   {
     "id": "#3",
     "title": "Google AdWords Strategy",
     "priority": "low",
-    "start": "2021-03-01T09:30",
-    "end": "2021-03-02T11:30",
-    "owner":"Srihari"
+    "start": "2021-04-28T09:30",
+    "end": "2021-04-30T11:30",
+    "owner": "oia"
   },
   {
     "id": "#4",
@@ -29,15 +29,15 @@
     "priority": "medium",
     "start": "2021-04-15T09:30",
     "end": "2021-04-15T11:30",
-    "owner":"Srihari"
+    "owner": "bnv"
   },
   {
     "id": "#5",
     "title": "Rollout of New Website and Marketing Brochures",
-    "priority": "low",
+    "priority": "high",
     "start": "2021-04-19T10:30",
-    "end": "2021-04-19T12:30",
-    "owner":"Gandu"
+    "end": "2021-04-20T12:30",
+    "owner": "sda"
   },
   {
     "id": "#6",
@@ -45,22 +45,22 @@
     "priority": "high",
     "start": "2021-04-19T09:30",
     "end": "2021-04-19T10:30",
-    "owner":"Srihari"
+    "owner": "ljk"
   },
   {
     "id": "#7",
     "title": "Go for jogging",
-    "priority": "low",
+    "priority": "medium",
     "start": "2021-04-19T16:30",
     "end": "2021-04-19T17:30",
-    "owner":"Srihari"
+    "owner": "ret"
   },
   {
     "id": "#8",
-    "title": "Go for jogging",
+    "title": "Sleeping",
     "priority": "low",
     "start": "2021-04-19T16:30",
     "end": "2021-04-19T17:30",
-    "owner":"Srihari"
+    "owner": "nbm"
   }
 ]

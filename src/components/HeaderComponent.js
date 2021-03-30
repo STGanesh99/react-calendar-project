@@ -9,12 +9,12 @@ import DateFnsUtils from "@date-io/date-fns";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AddIcon from "@material-ui/icons/Add";
-import {
-  useHistory
-} from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 const Toolbar = (props) => {
+  const location = useLocation();
   const history = useHistory();
+
   const goToBack = () => {
     let mDate = props.date;
     let newDate = new Date(
@@ -37,66 +37,74 @@ const Toolbar = (props) => {
 
   return (
     <>
-    <div style={{display:"flex",flexWrap:"wrap",justifyContent:"space-between"}}>
-    <div style={{marginLeft:"60px",fontSize:"18px"}}>
-    <p>Logged in as :{props.owner}</p>
-    </div>
-    <div    style={{
-            display: "flex",
-            alignItems:"center",
-            fontSize: "15px",
-            borderRadius: ".3rem",
-            color:"white",
-            justifyContent:"flex-end",
-            flex:"1",
-            marginRight:"50px"
-          }}>
-    <Button
-          variant="outlined"
-          onClick={() => history.replace("/")}
-        >
-        <span>Log out</span>
-    </Button>
-    </div>
-    </div>
-    <div className="toolbar-container">
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          variant="inline"
-          value={props.date}
-          views={["month", "year"]}
-          onChange={props.setDate}
-          minDate={new Date()}
-          inputVariant="outlined"
-          style={{ width: "auto" }}
-          format="MM/yyyy"
-          InputProps={{ readOnly: true }}
-        />
-      </MuiPickersUtilsProvider>
       <div
         style={{
           display: "flex",
-          alignItems: "center",
-          marginLeft: "-20px",
           flexWrap: "wrap",
+          justifyContent: "space-between",
         }}
       >
-       <Button disabled={!isAfter(props.date, new Date())} onClick={goToBack}>
-          <ChevronLeftIcon style={{ fontSize: "25px" }} />
-      </Button>
-        <p
-        style={{
-          fontWeight: "bolder",
-          fontSize: "2rem",
-          alignItems:"center",
-          display:"flex"
-        }}
-      >
-        {format(new Date(props.date), "MMMM")} {props.date.getFullYear()}
-      </p>
-        <Button style={{ marginRight: "10px" }} onClick={goToNext}>
-          <ChevronRightIcon style={{ fontSize: "25px" }} />
-        </Button>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontSize: "15px",
+            justifyContent: "space-between",
+            width: "90%",
+            margin: "10px auto"
+          }}
+        >
+          <p style={{fontSize: "1.1rem"}}>Logged in as: {props.owner}</p>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              location.state.email = "";
+              history.replace("/login");
+            }}
+          >
+            Log out
+          </Button>
+        </div>
+      </div>
+      <div className="toolbar-container">
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            variant="inline"
+            value={props.date}
+            views={["month", "year"]}
+            onChange={props.setDate}
+            minDate={new Date()}
+            inputVariant="outlined"
+            style={{ width: "auto" }}
+            format="MM/yyyy"
+            InputProps={{ readOnly: true }}
+          />
+        </MuiPickersUtilsProvider>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            disabled={!isAfter(props.date, new Date())}
+            style={{ marginRight: "15px" }}
+            onClick={goToBack}
+          >
+            <ChevronLeftIcon style={{ fontSize: "25px" }} />
+          </Button>
+          <p
+            style={{
+              fontWeight: "bolder",
+              fontSize: "2rem",
+              textAlign: "center",
+            }}
+          >
+            {format(new Date(props.date), "MMMM")} {props.date.getFullYear()}
+          </p>
+          <Button style={{ marginLeft: "15px" }} onClick={goToNext}>
+            <ChevronRightIcon style={{ fontSize: "25px" }} />
+          </Button>
         </div>
         <Button
           style={{
@@ -104,8 +112,7 @@ const Toolbar = (props) => {
             alignItems: "center",
             fontSize: "15px",
             borderRadius: ".3rem",
-            marginLeft: "10px",
-            color:"white"
+            color: "white",
           }}
           variant="outlined"
           onClick={() => props.showUpdateModal(true)}
@@ -113,7 +120,7 @@ const Toolbar = (props) => {
           <AddIcon style={{ fontSize: "25px" }} />
           <span>Create New Event</span>
         </Button>
-    </div>
+      </div>
     </>
   );
 };

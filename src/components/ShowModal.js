@@ -1,11 +1,7 @@
-import React, { useEffect } from "react";
 import {
   Modal,
   Fade,
   Backdrop,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
   Button,
 } from "@material-ui/core";
@@ -13,11 +9,11 @@ import { format } from "date-fns";
 import styles from "./ShowModalStyles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { isBefore } from "date-fns";
-import SimpleAccordion from "./showmore"
-import CloseIcon from '@material-ui/icons/Close';
+import SimpleAccordion from "./ShowAccordion";
+import CloseIcon from "@material-ui/icons/Close";
 export default function SimpleModal(props) {
   const classes = styles();
-  useEffect(() => {}, [props.data.events]);
+
   const expiredEvents = props.data.events.filter((event) =>
     isBefore(new Date(event.end), new Date())
   );
@@ -51,45 +47,60 @@ export default function SimpleModal(props) {
     >
       <Fade in={props.open}>
         <div className={classes.paper}>
-          <div style={{display:"flex"}}>
-          <h3>Events at {format(props.data.date, "d/MM/yy")}</h3>
-          <div style={{display:"flex",flex:"1",justifyContent:'flex-end'}}>
-          <Button onClick={() => props.handleClose()}><CloseIcon/></Button>
-          </div>
+          <div style={{ display: "flex" }}>
+            <h3>Events at {format(props.data.date, "d MMM yyyy")}</h3>
+            <div
+              style={{ display: "flex", flex: "1", justifyContent: "flex-end" }}
+            >
+              <Button onClick={() => props.handleClose()}>
+                <CloseIcon />
+              </Button>
+            </div>
           </div>
           <h3>Active Events</h3>
           <div className={classes.container}>
-                {activeEvents.length ? (
-                  <div style={{ display: "block" }}>
-                    {activeEvents.map((event) => (
-                      <div key={event.id}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header">
-                        <SimpleAccordion title={event.title} edit={()=>editHandler(event)} delete={()=>deleteHandler(event)}/>
-                        </div>
-                    ))}
+            {activeEvents.length ? (
+              <div style={{ display: "block" }}>
+                {activeEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                  >
+                    <SimpleAccordion
+                      event={event}
+                      edit={() => editHandler(event)}
+                      delete={() => deleteHandler(event)}
+                    />
                   </div>
-                ) : (
-                  <Typography>No Events</Typography>
-                )}
-                <h3>Expired Events</h3> 
-                {expiredEvents.length ? (
-                  <div style={{ display: "block" }}>
-                    {expiredEvents.map((event) => (
-                      <div key={event.id}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header">
-                        <SimpleAccordion title={event.title} edit={()=>editHandler(event)} delete={()=>deleteHandler(event)}/>
-                        </div>
-                    ))}
+                ))}
+              </div>
+            ) : (
+              <Typography>No Events</Typography>
+            )}
+            <h3>Expired Events</h3>
+            {expiredEvents.length ? (
+              <div style={{ display: "block" }}>
+                {expiredEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                  >
+                    <SimpleAccordion
+                      title={event.title}
+                      edit={() => editHandler(event)}
+                      delete={() => deleteHandler(event)}
+                    />
                   </div>
-                ) : (
-                  <Typography>No Events</Typography>
-                )}
+                ))}
+              </div>
+            ) : (
+              <Typography>No Events</Typography>
+            )}
           </div>
-        
         </div>
       </Fade>
     </Modal>
