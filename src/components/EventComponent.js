@@ -84,10 +84,13 @@ export default function MyEvent(props) {
           </div>
           <div>
             <div>
-              <div>
+              <div style={{ display: "flex", margin: "10px 0px" }}>
                 <span style={{ fontSize: "1.3rem" }}>{props.event.title}</span>
                 <FiberManualRecordIcon
-                  style={{ color: getColor(props.event.priority), marginLeft: "5px", marginTop: "2px" }}
+                  style={{
+                    color: getColor(props.event.priority),
+                    marginLeft: "15px",
+                  }}
                 ></FiberManualRecordIcon>
               </div>
             </div>
