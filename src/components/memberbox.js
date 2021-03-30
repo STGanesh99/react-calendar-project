@@ -81,7 +81,6 @@ function CreatableInputOnly(props) {
         onKeyDown={handleKeyDown}
         placeholder="Members"
         value={state.value}
-       
       />
       {mailErr !== "" && (
         <div className="alert alert-danger" role="alert">

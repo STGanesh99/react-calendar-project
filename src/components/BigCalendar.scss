@@ -20,10 +20,11 @@
 .rbc-month-view {
   margin: 10px 8%;
   width: unset !important;
-  background-color: #e9ecef6c;
+  // background-color: #e9ecef6c;
   backdrop-filter: blur(5px);
   border-width: 0 !important;
-  border-radius: 0.3rem;
+  border-radius: 1rem;
+  border: 1px solid black !important;
 }
 .rbc-header {
   padding: 10px 5px !important;
@@ -35,19 +36,19 @@
 .rbc-date-cell > a {
   cursor: default !important;
 }
-.rbc-show-more{
+.rbc-show-more {
   background: inherit !important;
 }
 .rbc-day-bg:not(.rbc-off-range-bg):hover {
   background-color: rgba(245, 216, 120, 0.315) !important;
 }
 
-.rbc-off-range-bg {
-  background-color: #5050505e !important;
-}
-.rbc-off-range {
-  color: black !important;
-}
+// .rbc-off-range-bg {
+//   background-color: #5050505e !important;
+// }
+// .rbc-off-range {
+//   color: black !important;
+// }
 
 .rbc-today {
   background-color: #007bff98 !important;
@@ -62,12 +63,12 @@
   background-color: rgba(77, 202, 108, 0.897) !important;
 }
 
-.login{
-  text-align:center;
+.login {
+  text-align: center;
 }
 
-.emailinput:focus{
-  outline: none
+.emailinput:focus {
+  outline: none;
 }
 
 @import "react-big-calendar/lib/sass/styles";

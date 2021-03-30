@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
-  <Router basename="/calendar">
+  <Router basename="/ps-interns/calendar/react">
     <App />
   </Router>,
   document.getElementById("root")

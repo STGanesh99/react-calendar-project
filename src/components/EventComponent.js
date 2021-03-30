@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Popover, Button } from "@material-ui/core";
+import { Popover, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { isSameDay, format } from "date-fns";
@@ -40,7 +40,7 @@ export default function MyEvent(props) {
       default:
         break;
     }
-  }
+  };
 
   return (
     <div>
@@ -71,38 +71,45 @@ export default function MyEvent(props) {
             }}
           >
             {startDate > new Date() && (
-              <Button onClick={editHandler} color="primary">
+              <IconButton onClick={editHandler} color="primary">
                 <EditIcon />
-              </Button>
+              </IconButton>
             )}
-            <Button onClick={deleteEvent} color="secondary">
+            <IconButton onClick={deleteEvent} style={{ color: "red" }}>
               <DeleteIcon />
-            </Button>
-            <Button onClick={() => setPopupState(false)} color="secondary">
+            </IconButton>
+            <IconButton onClick={() => setPopupState(false)}>
               <CloseIcon />
-            </Button>
+            </IconButton>
           </div>
           <div>
             <div>
-              <div style={{ display: "flex", margin: "10px 0px" }}>
-                <span style={{ fontSize: "1.3rem" }}>{props.event.title}</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "10px 0px",
+                }}
+              >
                 <FiberManualRecordIcon
                   style={{
                     color: getColor(props.event.priority),
-                    marginLeft: "15px",
                   }}
-                ></FiberManualRecordIcon>
+                />
+                <span style={{ fontSize: "1.3rem", marginLeft: "10px" }}>
+                  {props.event.title}
+                </span>
               </div>
             </div>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", marginBottom: "10px" }}>
               <ScheduleIcon />
-              <div style={{ marginLeft: "10px", marginBottom: "10px" }}>
+              <div style={{ marginLeft: "10px" }}>
                 {format(startDate, "hh:mm aaa") +
                   " - " +
                   format(endDate, "hh:mm aaa")}
               </div>
             </div>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", marginBottom: "10px" }}>
               <EventIcon />
               <div style={{ marginLeft: "10px" }}>
                 {format(startDate, "d/MM/yy")}
@@ -110,16 +117,7 @@ export default function MyEvent(props) {
                   " - " + format(endDate, "d/MM/yy")}
               </div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "15px 0px",
-                marginRight: "15px",
-              }}
-            >
-              <span>Organized by : {props.event.owner}</span>
-            </div>
+            <span>Organized by: {props.event.owner}</span>
           </div>
         </div>
       </Popover>

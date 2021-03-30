@@ -51,10 +51,10 @@ const Toolbar = (props) => {
             fontSize: "15px",
             justifyContent: "space-between",
             width: "84%",
-            margin: "10px auto"
+            margin: "10px auto",
           }}
         >
-          <p style={{fontSize: "1.1rem"}}>Logged in as: {props.owner}</p>
+          <p style={{ fontSize: "1.1rem" }}>Logged in as: {props.owner}</p>
           <Button
             variant="outlined"
             onClick={() => {

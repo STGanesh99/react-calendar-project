@@ -1,23 +1,26 @@
-import {
-  Modal,
-  Fade,
-  Backdrop,
-  Typography,
-  Button,
-} from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Modal, Fade, Backdrop, Typography, Button } from "@material-ui/core";
 import { format } from "date-fns";
 import styles from "./ShowModalStyles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { isBefore } from "date-fns";
 import SimpleAccordion from "./ShowAccordion";
 import CloseIcon from "@material-ui/icons/Close";
+
 export default function SimpleModal(props) {
+  const [eventList, setEventList] = useState(props.data.events);
+
+  useEffect(() => {
+    setEventList(props.data.events);
+  }, [props.data.events]);
+
   const classes = styles();
 
-  const expiredEvents = props.data.events.filter((event) =>
+  const expiredEvents = eventList.filter((event) =>
     isBefore(new Date(event.end), new Date())
   );
-  const activeEvents = props.data.events.filter(
+
+  const activeEvents = eventList.filter(
     (event) => !expiredEvents.includes(event)
   );
   const editHandler = (event) => {
@@ -25,11 +28,16 @@ export default function SimpleModal(props) {
     props.showUpdateModal(true);
     props.handleClose();
   };
+
   const deleteHandler = (id) => {
-    let updated = props.events.filter((event) => {
+    let updatedTotalList = props.events.filter((event) => {
       return id !== event.id;
     });
-    props.setEvents(updated);
+    let updatedLocalList = props.data.events.filter((event) => {
+      return id !== event.id;
+    });
+    setEventList(updatedLocalList);
+    props.setEvents(updatedTotalList);
   };
 
   return (
@@ -70,8 +78,8 @@ export default function SimpleModal(props) {
                   >
                     <SimpleAccordion
                       event={event}
-                      edit={() => editHandler(event)}
-                      delete={() => deleteHandler(event)}
+                      edit={editHandler}
+                      delete={deleteHandler}
                     />
                   </div>
                 ))}
