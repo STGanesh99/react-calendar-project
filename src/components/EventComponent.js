@@ -6,6 +6,7 @@ import { isSameDay, format } from "date-fns";
 import CloseIcon from "@material-ui/icons/Close";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import EventIcon from "@material-ui/icons/Event";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 export default function MyEvent(props) {
   const [popupState, setPopupState] = useState(false);
@@ -27,6 +28,19 @@ export default function MyEvent(props) {
 
   let startDate = new Date(props.event.start);
   let endDate = new Date(props.event.end);
+
+  const getColor = (priority) => {
+    switch (priority) {
+      case "high":
+        return "rgba(253, 48, 48, 0.897)";
+      case "medium":
+        return "rgba(253, 140, 48, 0.897)";
+      case "low":
+        return "rgba(77, 202, 108, 0.897)";
+      default:
+        break;
+    }
+  }
 
   return (
     <div>
@@ -70,7 +84,12 @@ export default function MyEvent(props) {
           </div>
           <div>
             <div>
-              <p style={{ fontSize: "1.3rem" }}>{props.event.title}</p>
+              <div>
+                <span style={{ fontSize: "1.3rem" }}>{props.event.title}</span>
+                <FiberManualRecordIcon
+                  style={{ color: getColor(props.event.priority), marginLeft: "5px", marginTop: "2px" }}
+                ></FiberManualRecordIcon>
+              </div>
             </div>
             <div style={{ display: "flex" }}>
               <ScheduleIcon />
@@ -88,9 +107,15 @@ export default function MyEvent(props) {
                   " - " + format(endDate, "d/MM/yy")}
               </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", margin: "15px 0px", marginRight : "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "15px 0px",
+                marginRight: "15px",
+              }}
+            >
               <span>Organized by : {props.event.owner}</span>
-              <span>Priority:  {props.event.priority[0].toUpperCase()+props.event.priority.slice(1)}</span>
             </div>
           </div>
         </div>

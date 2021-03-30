@@ -50,7 +50,7 @@ const Toolbar = (props) => {
             alignItems: "center",
             fontSize: "15px",
             justifyContent: "space-between",
-            width: "90%",
+            width: "84%",
             margin: "10px auto"
           }}
         >
@@ -112,7 +112,6 @@ const Toolbar = (props) => {
             alignItems: "center",
             fontSize: "15px",
             borderRadius: ".3rem",
-            color: "white",
           }}
           variant="outlined"
           onClick={() => props.showUpdateModal(true)}
