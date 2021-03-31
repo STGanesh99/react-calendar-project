@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 
-const components = {
-  DropdownIndicator: null,
-};
-
 function CreatableInputOnly(props) {
   const optionList = props.memberState.map((member) => ({
     label: member,
     value: member,
+    email:member,
   }));
   const [state, stateHandler] = useState({
     inputValue: "",
@@ -19,6 +16,7 @@ function CreatableInputOnly(props) {
   const createOption = (label) => ({
     label,
     value: label,
+    email:label
   });
 
   function ValidateEmail(mail) {
@@ -33,13 +31,16 @@ function CreatableInputOnly(props) {
     return false;
   }
 
-  const handleChange = (value) => {
+  const handleChange = async (value) => {
+    console.log(value)
     stateHandler({ ...state, value: value });
     let values = value.map((item) => item.label);
-    props.memberListHandler([...values]);
+    console.log(values)
+    props.memberListHandler([...values])
   };
 
   const handleInputChange = (inputValue) => {
+    console.log(inputValue)
     stateHandler({ ...state, inputValue: inputValue });
   };
 
@@ -60,8 +61,8 @@ function CreatableInputOnly(props) {
           inputValue: "",
           value: [...state.value, createOption(state.inputValue)],
         });
-        let oldValues = state.value.map((item) => item.label);
-        props.memberListHandler([...oldValues, state.inputValue]);
+        let oldValues = state.value.map((item) =>  { return{email:item.label}});
+        props.memberListHandler([...oldValues,{email:state.inputValue}]);
         event.preventDefault();
         break;
       default:
@@ -71,16 +72,14 @@ function CreatableInputOnly(props) {
   return (
     <>
       <CreatableSelect
-        components={components}
-        inputValue={state.inputValue}
-        isClearable
         isMulti
-        menuIsOpen={false}
+        inputValue={state.inputValue}
         onChange={handleChange}
         onInputChange={handleInputChange}
         onKeyDown={handleKeyDown}
         placeholder="Members"
         value={state.value}
+        options = {props.sugmem}
       />
       {mailErr !== "" && (
         <div className="alert alert-danger" role="alert">

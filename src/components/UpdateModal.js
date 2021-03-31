@@ -18,14 +18,31 @@ import CreatableInputOnly from "./memberbox";
 import { isAfter } from "date-fns";
 import axios from "axios";
 import CloseIcon from "@material-ui/icons/Close";
-
+import { format } from "date-fns";
 function TransitionsModal(props) {
   const classes = styles();
   const [timeErr, setTimeErr] = useState(false);
   const [memberErr, setMemberErr] = useState(false);
   const [formState, formHandler] = useState(props.data);
-  console.log(formState)
+  const [sugmem,setsugmem] = useState([]);
+  var memberlist = []
+  
   useEffect(() => {
+    axios.get("http://13.127.179.148:8085/api/suggestions")
+    .then((res)=>{
+       var arr = [];
+       console.log(res)
+       arr =  res.data.memberList[0].map((member)=>{
+                   return {value:member.email,label:member.email,...member}
+      },[])
+      setsugmem([...arr])
+    })
+    if(props.data.title.length!=0){
+      memberlist = props.data.members.map((member)=>{
+        return member.email
+      })
+    }
+    
     formHandler(props.data);
   }, [props.data]);
 
@@ -44,18 +61,26 @@ function TransitionsModal(props) {
     let filteredEventData = props.events.filter(
       (event) => event.id !== formState.id
     );
-    axios({
-      method: 'post',
-      url: "http://13.127.179.148:8085/api/events/register",
-      headers: {}, 
-      data: {
+    var url;
+    if(props.data.title.length==0){
+         url = "http://13.127.179.148:8085/api/events/register"
+    }
+    else{
+      url = "http://13.127.179.148:8085/api/eventupdate"
+    }
+    axios.post({
+      url: url,
+      headers: {
+        'Content-Type': 'application/json'
+      }, 
+      body: {
           eventname: formState.title,
           status: true,
-          pid: 1,
-          fromDate: "2021-03-30",
-          toDate: "2021-03-30",
-          fromTime: "11:30:00",
-          toTime: "12:30:00",
+          pid: formState.priority=='low'?3:formState.priority=="high"?1:2,
+          fromDate: format(props.data.start, "yyyy-MM-dd"),
+          toDate: format(props.data.end, "yyyy-MM-dd"),
+          fromTime: format(props.data.start, "hh:mm:ss"),
+          toTime: format(props.data.end, "hh:mm:ss"),
           eventDescription:formState.description,
           adminid: formState.id,
           adminemail: formState.email,
@@ -75,7 +100,6 @@ function TransitionsModal(props) {
   };
 
   const handleChange = (e) => {
-    console.log(props.data.title)
     let propertyName = e.target.getAttribute("name");
     let propertyValue = e.target.value;
     let newObject = { ...formState };
@@ -221,13 +245,15 @@ function TransitionsModal(props) {
               <h4 style={{ margin: "20px 0" }}>Attendees</h4>
               <div style={{ width: "460px" }}>
                 <CreatableInputOnly
-                  memberListHandler={(memberList) =>
+                  memberListHandler={(memberList) =>{
+                    console.log(memberList)
                     formHandler({
                       ...formState,
                       members: memberList,
-                    })
+                    })}
                   }
-                  memberState={formState.members}
+                  memberState={memberlist}
+                  sugmem = {sugmem}
                 />
                 {memberErr && (
                   <div className="alert alert-danger">

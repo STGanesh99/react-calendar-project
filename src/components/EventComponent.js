@@ -13,6 +13,7 @@ export default function MyEvent(props) {
   const eventRef = useRef(null);
 
   const editHandler = () => {
+    console.log(props.event)
     props.modalDataHandler(props.event);
     props.showUpdateModal(true);
     setPopupState(false);

@@ -39,7 +39,7 @@ const MyCalendar = () => {
     priority: "",
     start: new Date(),
     end: addMinutes(new Date(), 30),
-    description: "",
+    desc: "",
     members: [],
   };
   const [updateModalData, setUpdateModalData] = useState(defaultEventData);
@@ -58,22 +58,27 @@ const MyCalendar = () => {
       m = Number(m)+1;
       const month = m.length==1?0+m:m;
       const year = date.getFullYear(); 
-      axios.get("http://13.127.179.148:8085/api/eventdetails/monthview?month="+month+"&year="+year+"&userId=16")
-      .then((res)=>console.log(res))
 
-    axios
-      .get("sampleData.json")
-      .then((res) => {
-        const persons = res.data;
-        setEventData(persons);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setErr(true);
-        setLoading(false);
+      axios.get("http://13.127.179.148:8085/api/eventdetails/monthview?month="+month+"&year="+year+"&userId=16")
+      .then((res)=>{
+        console.log(res.data.eventList[0])
+         var events =  res.data.eventList[0].map((event)=>{
+             return{
+              title: event.eventname,
+              priority:event.pid==1?"high":event.pid==2?"medium":"low",
+              start: new Date(event.fromDate+"T"+event.fromTime),
+              end: new Date(event.toDate+"T"+event.toTime),
+              desc: event.eventDescription,
+              members: event.memberDetails,
+              owner:event.adminemail
+             }
+         })
+         console.log(events)
+         setLoading(false)
+         setEventData([...events])
       });
-  }, [date]);
-  console.log(updateModalData);
+
+    },[]);
   const [updateModalState, setUpdateModalState] = useState(false);
   const [showModalState, setShowModalState] = useState(false);
  
@@ -201,3 +206,16 @@ const MyCalendar = () => {
 };
 
 export default MyCalendar;
+
+/*axios
+.get("sampleData.json")
+.then((res) => {
+  const persons = res.data;
+  setEventData(persons);
+  setLoading(false);
+})
+.catch((err) => {
+  setErr(true);
+  setLoading(false);
+});
+}, [date]);*/
