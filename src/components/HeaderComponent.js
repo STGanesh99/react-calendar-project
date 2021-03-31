@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Button } from "@material-ui/core";
 import { isAfter, format } from "date-fns";
 import {
@@ -11,10 +11,10 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import AddIcon from "@material-ui/icons/Add";
 import { useLocation, useHistory } from "react-router-dom";
 
+
 const Toolbar = (props) => {
   const location = useLocation();
   const history = useHistory();
-
   const goToBack = () => {
     let mDate = props.date;
     let newDate = new Date(

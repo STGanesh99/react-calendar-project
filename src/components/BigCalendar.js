@@ -34,7 +34,33 @@ const MyCalendar = () => {
   const [eventData, setEventData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(false);
+  const defaultEventData = {
+    title: "",
+    priority: "",
+    start: new Date(),
+    end: addMinutes(new Date(), 30),
+    description: "",
+    members: [],
+  };
+  const [updateModalData, setUpdateModalData] = useState(defaultEventData);
+  const [date, setDate] = useState(new Date());
   useEffect(() => {
+    
+    axios.post("http://13.127.179.148:8085/api/login?mail="+location.state?.email)
+     .then((res)=>{
+       setUpdateModalData({...res.data,...updateModalData})
+     }).catch((err)=>{
+           console.log("error in logging in please try again")
+     }
+     )
+    
+      var m  = date.getMonth()+"";
+      m = Number(m)+1;
+      const month = m.length==1?0+m:m;
+      const year = date.getFullYear(); 
+      axios.get("http://13.127.179.148:8085/api/eventdetails/monthview?month="+month+"&year="+year+"&userId=16")
+      .then((res)=>console.log(res))
+
     axios
       .get("sampleData.json")
       .then((res) => {
@@ -46,27 +72,17 @@ const MyCalendar = () => {
         setErr(true);
         setLoading(false);
       });
-  }, []);
-
-  const defaultEventData = {
-    id: uniqid(),
-    title: "",
-    priority: "",
-    start: new Date(),
-    end: addMinutes(new Date(), 30),
-    description: "",
-    owner: location.state?.email,
-    members: [],
-  };
+  }, [date]);
+  console.log(updateModalData);
   const [updateModalState, setUpdateModalState] = useState(false);
   const [showModalState, setShowModalState] = useState(false);
-  const [updateModalData, setUpdateModalData] = useState(defaultEventData);
+ 
   const [postUpdateState, setPostUpdateState] = useState(null);
   const [showModalData, setShowModalData] = useState({
     date: new Date(),
     events: [],
   });
-  const [date, setDate] = useState(new Date());
+  
   return (
     <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
       {!location.state && <Redirect to="/login" />}
@@ -104,6 +120,7 @@ const MyCalendar = () => {
         events={eventData}
         updateHandler={setEventData}
         setMessage={setPostUpdateState}
+        date={date}
       />
       <ShowModal
         open={showModalState}

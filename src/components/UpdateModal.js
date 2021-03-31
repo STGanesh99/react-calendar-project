@@ -14,7 +14,7 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CreatableInputOnly from "./Memberbox";
+import CreatableInputOnly from "./memberbox";
 import { isAfter } from "date-fns";
 import axios from "axios";
 import CloseIcon from "@material-ui/icons/Close";
@@ -24,7 +24,7 @@ function TransitionsModal(props) {
   const [timeErr, setTimeErr] = useState(false);
   const [memberErr, setMemberErr] = useState(false);
   const [formState, formHandler] = useState(props.data);
-
+  console.log(formState)
   useEffect(() => {
     formHandler(props.data);
   }, [props.data]);
@@ -44,12 +44,38 @@ function TransitionsModal(props) {
     let filteredEventData = props.events.filter(
       (event) => event.id !== formState.id
     );
+    axios({
+      method: 'post',
+      url: "http://13.127.179.148:8085/api/events/register",
+      headers: {}, 
+      data: {
+          eventname: formState.title,
+          status: true,
+          pid: 1,
+          fromDate: "2021-03-30",
+          toDate: "2021-03-30",
+          fromTime: "11:30:00",
+          toTime: "12:30:00",
+          eventDescription:formState.description,
+          adminid: formState.id,
+          adminemail: formState.email,
+          userrole: "admin",
+          memberList: [
+              1
+          ],
+          repeatmode: "no repeat",
+          weekDays: [],
+          memberDetails:formState.members,
+          memberUpdated: true
+      }
+    });
     props.updateHandler([...filteredEventData, formState]);
     props.setMessage("Successfully updated!");
     props.handleClose();
   };
 
   const handleChange = (e) => {
+    console.log(props.data.title)
     let propertyName = e.target.getAttribute("name");
     let propertyValue = e.target.value;
     let newObject = { ...formState };
